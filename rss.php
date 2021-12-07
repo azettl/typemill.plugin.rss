@@ -9,7 +9,6 @@ use \Typemill\Settings;
 
 class rss extends Plugin
 {
-    private $routes = [];
 
     # subscribe to the events
     public static function getSubscribedEvents()
@@ -72,9 +71,6 @@ class rss extends Plugin
                 # initiate object for metadata
                 $writeMeta = new WriteMeta();
                 $metadata  = $writeMeta->getPageMeta($settings, $pageData);
-
-                # add route
-                $this->routes[] = $pageData->urlRelWoF . '/rss';
 
                 $items = [];
                 foreach($pageData->folderContent as $childData){
