@@ -43,7 +43,7 @@ class rss extends Plugin
     {
         $data = $pagedata->getData();
 
-        if(isset($data['item']->folderContent) && is_array($data['item']->folderContent))
+        if(isset($data['item']->folderContent) && is_array($data['item']->folderContent) && method_exists($this, 'addMeta'))
         {
             $this->addMeta('rss', '<link rel="alternate" type="application/rss+xml" title="' . $data['title'] . '" href="' . $data['item']->urlAbs . '/rss">');
         }
