@@ -39,10 +39,14 @@ class rss extends Plugin
 	{
 		$this->updateRssXmls();
 	}
-    public function onPageReady()
+    public function onPageReady($pagedata)
     {
-#        $this->addMeta('rss', '<link rel="alternate" type="application/rss+xml" title="{{ title }}" href="{{ item.urlAbs }}/rss" />');
-        $this->addMeta('rss', '<link rel="alternate" type="application/rss+xml">');
+        $data = $pagedata->getData();
+
+        if(isset($data['item']->folderContent) && is_array($data['item']->folderContent))
+        {
+            $this->addMeta('rss', '<link rel="alternate" type="application/rss+xml" title="' . $data['title'] . '" href="' . $data['item']->urlAbs . '/rss">');
+        }
     }
 
     public static function addNewRoutes()
