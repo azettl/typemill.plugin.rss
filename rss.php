@@ -17,7 +17,8 @@ class rss extends Plugin
 			'onPagePublished'		=> 'onPagePublished',
 			'onPageUnpublished'		=> 'onPageUnpublished',
 			'onPageSorted'			=> 'onPageSorted',
-			'onPageDeleted'			=> 'onPageDeleted'
+			'onPageDeleted'			=> 'onPageDeleted',
+            'onPageReady'           => 'onPageReady'
         );
     }
 
@@ -38,6 +39,11 @@ class rss extends Plugin
 	{
 		$this->updateRssXmls();
 	}
+    public function onPageReady()
+    {
+#        $this->addMeta('rss', '<link rel="alternate" type="application/rss+xml" title="{{ title }}" href="{{ item.urlAbs }}/rss" />');
+        $this->addMeta('rss', '<link rel="alternate" type="application/rss+xml">');
+    }
 
     public static function addNewRoutes()
     {
