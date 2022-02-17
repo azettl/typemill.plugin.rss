@@ -61,6 +61,12 @@ class rss extends Plugin
                 ];
             }
         }
+		
+		$routes[] = [
+			'httpMethod'    => 'get', 
+			'route'         => '/rss', 
+			'class'         => 'Plugins\rss\rssController:all'
+		];
        
         return $routes;
     }
@@ -72,6 +78,7 @@ class rss extends Plugin
         $settings       = $settingsArray['settings'];
         $navigation     = $writeCache->getCache('cache', 'navigation.txt');
 
+		$allItems = [];
         foreach($navigation as $pageData){
             if(isset($pageData->folderContent) && is_array($pageData->folderContent)){
                 # initiate object for metadata
@@ -82,7 +89,9 @@ class rss extends Plugin
                 foreach($pageData->folderContent as $childData){
                     $childMetadata  = $writeMeta->getPageMeta($settings, $childData);
 
-                    $items[] = [
+                    $allItems[
+						($childMetadata['meta']['manualdate']) ? $childMetadata['meta']['manualdate'] . '-' . $childMetadata['meta']['time'] : $childMetadata['meta']['modified'] . '-' . $childMetadata['meta']['time']
+					] = $items[] = [
                         'title'         => htmlspecialchars($childData->name, ENT_XML1),
                         'link'          => $childData->urlAbs,
                         'description'   => htmlspecialchars($childMetadata['meta']['description'], ENT_XML1)
@@ -99,6 +108,17 @@ class rss extends Plugin
                 $writeCache->updateCache('cache', $pageData->slug . '.rss', false, $rssXml);
             }
         }
+		
+		$uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))->withUserInfo('');
+		krsort($allItems);
+		$rssXml = $this->getRssXml(
+			htmlspecialchars($settings['plugins']['rss']['mainrsstitle'], ENT_XML1),
+			$uri->getBaseUrl(),
+			htmlspecialchars($settings['plugins']['rss']['mainrssdescription'], ENT_XML1),
+			$allItems
+		);
+
+		$writeCache->updateCache('cache', 'all.rss', false, $rssXml);
     }
 
     private function getRssXml(string $title, string $link, string $description, array $items)
