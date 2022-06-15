@@ -94,7 +94,7 @@ class rss extends Plugin
                     $childMetadata  = $writeMeta->getPageMeta($settings, $childData);
 
                     $allItems[
-						($childMetadata['meta']['manualdate']) ? $childMetadata['meta']['manualdate'] . '-' . $childMetadata['meta']['time'] : $childMetadata['meta']['modified'] . '-' . $childMetadata['meta']['time']
+						(isset($childMetadata['meta']['manualdate'])) ? $childMetadata['meta']['manualdate'] . '-' . $childMetadata['meta']['time'] : $childMetadata['meta']['modified'] . '-' . $childMetadata['meta']['time']
 					] = $items[] = [
                         'title'         => htmlspecialchars($childData->name, ENT_XML1),
                         'link'          => $childData->urlAbs,
